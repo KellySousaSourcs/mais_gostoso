@@ -1,4 +1,5 @@
 import 'package:mais_gostoso/screens/home_screen.dart';
+import 'package:mais_gostoso/screens/login_screen.dart';
 import 'package:mais_gostoso/screens/pagamento_screen.dart';
 import 'package:mais_gostoso/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +23,7 @@ class MaisGostoso extends StatelessWidget {
         '/home': (context) => const HomeScreen(initialIndex: 0),
         '/pedidos': (context) => const HomeScreen(initialIndex: 2),
         '/pagamento': (context) => const PagamentoScreen(),
+        '/login': (context) => const LoginScreen(),
         // futuramente: '/pagamento/pix': ..., '/pagamento/cartao': ...
       },
     );
