@@ -1,7 +1,6 @@
 import 'package:mais_gostoso/data/quantidade_itens_home.dart';
 import 'package:mais_gostoso/screens/cart_model.dart';
 import 'package:mais_gostoso/screens/categoria_screen.dart';
-import 'package:mais_gostoso/screens/navigation_bar_screens/busca_screen.dart';
 import 'package:mais_gostoso/screens/navigation_bar_screens/perfil_screen.dart';
 import 'package:mais_gostoso/screens/pedidos_screen.dart';
 import 'package:flutter/material.dart';
@@ -22,8 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     _screens = [
       _buildHomeContent(),
-      const BuscaScreen(),
-      const PedidoScreen(), 
+      const PedidoScreen(),
       const PerfilScreen(),
     ];
   }
@@ -67,38 +65,6 @@ class _HomeScreenState extends State<HomeScreen> {
           right: 0,
           child: Center(
             child: Image.asset('assets/images/hatchef.png', height: 110),
-          ),
-        ),
-        Positioned(
-          top: 35,
-          right: 16,
-          child: Padding(
-            padding: const EdgeInsets.all(6),
-            child: Container(
-              width: 35,
-              height: 35,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: const Color(0xFFF4EEE1),
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color(0xFF757575).withOpacity(0.5),
-                    spreadRadius: 1,
-                    blurRadius: 3,
-                    offset: const Offset(3, 3),
-                  ),
-                ],
-              ),
-              child: IconButton(
-                padding: EdgeInsets.zero,
-                icon: const Icon(
-                  Icons.notifications_none_outlined,
-                  color: Color(0xFF252810),
-                  size: 23,
-                ),
-                onPressed: () {},
-              ),
-            ),
           ),
         ),
       ],
@@ -241,7 +207,6 @@ class _HomeScreenState extends State<HomeScreen> {
       },
       items: const [
         BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Início'),
-        BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Busca'),
         BottomNavigationBarItem(
           icon: Icon(Icons.shopping_cart),
           label: 'Pedidos',

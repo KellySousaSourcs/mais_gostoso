@@ -1,6 +1,7 @@
 import 'package:mais_gostoso/screens/cart_model.dart';
 import 'package:mais_gostoso/screens/menu_item_model.dart';
 import 'package:flutter/material.dart';
+import 'package:mais_gostoso/screens/models/favorites_model.dart';
 
 class ItemDescriptionScreen extends StatefulWidget {
   final Map<String, dynamic> item;
@@ -12,19 +13,37 @@ class ItemDescriptionScreen extends StatefulWidget {
 }
 
 class _ItemDescriptionScreenState extends State<ItemDescriptionScreen> {
+  final FavoritesModel _favoritesModel = FavoritesModel();
   int quantity = 1;
   String observation = '';
 
-  void _addToCart(BuildContext context) {
-    final menuItem = MenuItem(
-      name: widget.item['name'] ?? '',
-      desc: widget.item['desc'] ?? '',
-      weight: widget.item['weight'] ?? '',
-      image: widget.item['image'] ?? '',
-      price: double.parse((widget.item['price'] ?? '0').replaceAll(',', '.')),
-      quantity: quantity,
-      observation: observation,
-    );
+  @override
+void initState() {
+super.initState();
+_favoritesModel.loadFavorites();
+_favoritesModel.addListener(_updateFavoriteState);
+}
+
+void _updateFavoriteState() {
+if (mounted) setState(() {});
+}
+
+@override
+void dispose() {
+_favoritesModel.removeListener(_updateFavoriteState);
+super.dispose();
+}
+
+void _addToCart(BuildContext context) {
+  final menuItem = MenuItem(
+    name: widget.item['name'] ?? '',
+    desc: widget.item['desc'] ?? '',
+    weight: widget.item['weight'] ?? '',
+    image: widget.item['image'] ?? '',
+    price: double.parse((widget.item['price'] ?? '0').replaceAll(',', '.')),
+    quantity: quantity,
+    observation: observation,
+  );
 
     // Adiciona ao carrinho global
     CartModel().addItem(menuItem);
@@ -217,11 +236,37 @@ class _ItemDescriptionScreenState extends State<ItemDescriptionScreen> {
                     ),
                     child: IconButton(
                       icon: Icon(
-                        Icons.favorite_border,
-                        color: Color(0xFF252810),
+                        Icons.favorite,
+                        color: _favoritesModel.isFavorite(widget.item['name'])
+                            ? Colors.red
+                            : Color(0xFF757575),
                         size: 19,
                       ),
-                      onPressed: () {},
+                      onPressed: () async {
+                        await _favoritesModel.toggleFavorite(widget.item);
+
+                        final isNowFavorite = _favoritesModel.isFavorite(widget.item['name'] ?? '');
+
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                isNowFavorite
+                                  ? '${widget.item['name']} adicionado aos favoritos!'
+                                  : '${widget.item['name']} removido dos favoritos!',
+                              ),
+                              action: SnackBarAction(
+                                label: 'Fechar',
+                                onPressed: () {
+                                  // Ação ao pressionar o botão "Fechar"
+                                },
+                              ),
+                            backgroundColor: const Color(0xFF2D5016),
+                            duration: const Duration(seconds: 2),
+                            ),
+                        );
+                        }
+                      },
                     ),
                   ),
                 ),
