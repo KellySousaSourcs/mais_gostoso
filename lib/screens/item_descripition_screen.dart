@@ -18,32 +18,32 @@ class _ItemDescriptionScreenState extends State<ItemDescriptionScreen> {
   String observation = '';
 
   @override
-void initState() {
-super.initState();
-_favoritesModel.loadFavorites();
-_favoritesModel.addListener(_updateFavoriteState);
-}
+  void initState() {
+    super.initState();
+    _favoritesModel.loadFavorites();
+    _favoritesModel.addListener(_updateFavoriteState);
+  }
 
-void _updateFavoriteState() {
-if (mounted) setState(() {});
-}
+  void _updateFavoriteState() {
+    if (mounted) setState(() {});
+  }
 
-@override
-void dispose() {
-_favoritesModel.removeListener(_updateFavoriteState);
-super.dispose();
-}
+  @override
+  void dispose() {
+    _favoritesModel.removeListener(_updateFavoriteState);
+    super.dispose();
+  }
 
-void _addToCart(BuildContext context) {
-  final menuItem = MenuItem(
-    name: widget.item['name'] ?? '',
-    desc: widget.item['desc'] ?? '',
-    weight: widget.item['weight'] ?? '',
-    image: widget.item['image'] ?? '',
-    price: double.parse((widget.item['price'] ?? '0').replaceAll(',', '.')),
-    quantity: quantity,
-    observation: observation,
-  );
+  void _addToCart(BuildContext context) {
+    final menuItem = MenuItem(
+      name: widget.item['name'] ?? '',
+      desc: widget.item['desc'] ?? '',
+      weight: widget.item['weight'] ?? '',
+      image: widget.item['image'] ?? '',
+      price: double.parse((widget.item['price'] ?? '0').replaceAll(',', '.')),
+      quantity: quantity,
+      observation: observation,
+    );
 
     // Adiciona ao carrinho global
     CartModel().addItem(menuItem);
@@ -60,16 +60,21 @@ void _addToCart(BuildContext context) {
       body: Stack(
         children: [
           Positioned.fill(
-            child: Container(
+            child: Padding(
               padding: EdgeInsets.only(bottom: 232),
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(widget.item['image']),
-
-                  fit: BoxFit.cover,
-                  colorFilter: ColorFilter.mode(
-                    Color(0xFFF4FFF1).withOpacity(0.3),
-                    BlendMode.srcOver,
+              child: Transform.scale(
+                scale: 3, // Aumenta a imagem em 30%
+                child: Container(
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage(widget.item['image']),
+                      fit: BoxFit.cover,
+                      alignment: Alignment.center,
+                      colorFilter: ColorFilter.mode(
+                        Color(0xFFF4FFF1).withOpacity(0.3),
+                        BlendMode.srcOver,
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -80,7 +85,7 @@ void _addToCart(BuildContext context) {
             child: Column(
               children: [
                 // Espaço adicional para o card sobreposto
-                SizedBox(height: 235), // Ajuste conforme necessário
+                SizedBox(height: 230), // Ajuste conforme necessário
                 // Container principal com conteúdo
                 Container(
                   margin: EdgeInsets.all(10),
@@ -95,7 +100,7 @@ void _addToCart(BuildContext context) {
                     children: [
                       // Imagem sobreposta
                       Positioned(
-                        bottom: 230, // Ajuste a posição vertical
+                        bottom: 220, // Ajuste a posição vertical
                         right: 9,
                         left: 9, // Ajuste a posição horizontal
                         child: Container(
@@ -134,7 +139,7 @@ void _addToCart(BuildContext context) {
                         ),
                       ),
 
-                      SizedBox(height: 75),
+                      SizedBox(height: 60),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -237,34 +242,38 @@ void _addToCart(BuildContext context) {
                     child: IconButton(
                       icon: Icon(
                         Icons.favorite,
-                        color: _favoritesModel.isFavorite(widget.item['name'])
-                            ? Colors.red
-                            : Color(0xFF757575),
+                        color:
+                            _favoritesModel.isFavorite(widget.item['name'])
+                                ? Colors.red
+                                : Color(0xFF757575),
                         size: 19,
                       ),
                       onPressed: () async {
                         await _favoritesModel.toggleFavorite(widget.item);
 
-                        final isNowFavorite = _favoritesModel.isFavorite(widget.item['name'] ?? '');
+                        final isNowFavorite = _favoritesModel.isFavorite(
+                          widget.item['name'] ?? '',
+                        );
 
                         if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
                                 isNowFavorite
-                                  ? '${widget.item['name']} adicionado aos favoritos!'
-                                  : '${widget.item['name']} removido dos favoritos!',
+                                    ? '${widget.item['name']} adicionado aos favoritos!'
+                                    : '${widget.item['name']} removido dos favoritos!',
                               ),
                               action: SnackBarAction(
+                                textColor: Color(0xFFEDDD1D),
                                 label: 'Fechar',
                                 onPressed: () {
                                   // Ação ao pressionar o botão "Fechar"
                                 },
                               ),
-                            backgroundColor: const Color(0xFF2D5016),
-                            duration: const Duration(seconds: 2),
+                              backgroundColor: const Color(0xFF252810),
+                              duration: const Duration(seconds: 2),
                             ),
-                        );
+                          );
                         }
                       },
                     ),

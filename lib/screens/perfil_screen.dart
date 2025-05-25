@@ -1,12 +1,23 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:mais_gostoso/screens/editarPerfilScreen.dart';
 
-class PerfilScreen extends StatelessWidget {
+class PerfilScreen extends StatefulWidget {
   const PerfilScreen({super.key});
+
+  @override
+  State<PerfilScreen> createState() => _PerfilScreenState();
+}
+
+class _PerfilScreenState extends State<PerfilScreen> {
+  String? imagePath;
+  String nome = 'Thomáz Jefferson';
+  String telefone = '';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFEDDD1D), // Cor de fundo externa
+      backgroundColor: const Color(0xFFEDDD1D),
       body: SafeArea(
         child: Column(
           children: [
@@ -26,9 +37,13 @@ class PerfilScreen extends StatelessWidget {
                       ],
                       borderRadius: const BorderRadius.all(Radius.circular(45)),
                     ),
-                    child: const CircleAvatar(
+                    child: CircleAvatar(
                       radius: 30,
-                      backgroundImage: AssetImage('assets/images/perfil.jpg'),
+                      backgroundImage:
+                          imagePath != null
+                              ? FileImage(File(imagePath!))
+                              : const AssetImage('assets/images/perfil.jpg')
+                                  as ImageProvider,
                     ),
                   ),
                   const SizedBox(width: 33),
@@ -45,7 +60,7 @@ class PerfilScreen extends StatelessWidget {
             ),
             Expanded(
               child: Container(
-                color: const Color(0xFFF4EEE1), // Cor do fundo interno
+                color: const Color(0xFFF4EEE1),
                 child: ListView(
                   padding: const EdgeInsets.symmetric(vertical: 15),
                   children: [
@@ -57,9 +72,28 @@ class PerfilScreen extends StatelessWidget {
                       },
                     ),
                     const Divider(height: 22),
-                    const ListTile(
-                      leading: Icon(Icons.description_outlined),
-                      title: Text('Dados da conta'),
+                    ListTile(
+                      leading: const Icon(Icons.description_outlined),
+                      title: const Text('Dados da conta'),
+                      onTap: () async {
+                        final result = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const EditarPerfilScreen(),
+                          ),
+                        );
+
+                        if (result != null && result is Map) {
+                          setState(() {
+                            imagePath = result['imagem'] ?? imagePath;
+                            nome =
+                                result['nome'].isNotEmpty
+                                    ? result['nome']
+                                    : nome;
+                            telefone = result['telefone'] ?? telefone;
+                          });
+                        }
+                      },
                     ),
                     const Divider(height: 22),
                     const ListTile(
