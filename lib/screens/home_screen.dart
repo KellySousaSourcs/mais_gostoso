@@ -1,9 +1,10 @@
 import 'package:mais_gostoso/data/quantidade_itens_home.dart';
 import 'package:mais_gostoso/screens/cart_model.dart';
 import 'package:mais_gostoso/screens/categoria_screen.dart';
-import 'package:mais_gostoso/screens/navigation_bar_screens/perfil_screen.dart';
+import 'package:mais_gostoso/screens/perfil_screen.dart';
 import 'package:mais_gostoso/screens/pedidos_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:mais_gostoso/screens/services/auth_service.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key, required int initialIndex});
@@ -176,15 +177,19 @@ class _HomeScreenState extends State<HomeScreen> {
                         color: Color(0xFFEDDD1D),
                       ),
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder:
-                                (context) => CategoryItemsScreen(
-                                  categoryTitle: category['title']!,
-                                ),
-                          ),
-                        );
+                        if (AuthService.isLoggedIn) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder:
+                                  (context) => CategoryItemsScreen(
+                                    categoryTitle: category['title']!,
+                                  ),
+                            ),
+                          );
+                        } else {
+                          Navigator.pushNamed(context, '/login');
+                        }
                       },
                     ),
                   ),

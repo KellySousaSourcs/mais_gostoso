@@ -21,7 +21,7 @@ class _SplashScreenState extends State<SplashScreen>
 
     // Controladores para animações combinadas
     _scaleController = AnimationController(
-      duration: const Duration(milliseconds: 800),
+      duration: const Duration(seconds: 3),
       vsync: this,
     );
 
@@ -87,7 +87,7 @@ class _SplashScreenState extends State<SplashScreen>
           // Tamanhos responsivos
           final logoSize = screenHeight * 0.3;
           final textSize = screenWidth * 0.4;
-          final spacing = screenHeight * 0.02;
+          final spacing = screenHeight * 0.005;
 
           return Center(
             child: SingleChildScrollView(

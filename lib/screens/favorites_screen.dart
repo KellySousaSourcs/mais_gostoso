@@ -38,7 +38,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
             // Header
             Container(
               color: const Color(0xFFEDDD1D),
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(25),
               child: Row(
                 children: [
                   Container(
@@ -173,7 +173,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                                     overflow: TextOverflow.ellipsis,
                                     style: const TextStyle(
                                       fontSize: 12,
-                                      color: Color(0xFFFFFFFF),
+                                      color: Color(0xFF757575),
                                     ),
                                   ),
                                   const SizedBox(height: 8),
@@ -196,8 +196,8 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                                   _favoritesModel.removeFavorite(item.name);
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
-                                      content: Text('${item.name} removido dos favoritos', style: TextStyle(color: Color(0xFFF4FFF1)),),
-                                      backgroundColor: const Color(0xFF2870),
+                                      content: Text('${item.name} removido dos favoritos'),
+                                      backgroundColor: const Color(0xFF252810),
                                       duration: const Duration(seconds: 2),
                                       behavior: SnackBarBehavior.floating,
                                     ),
