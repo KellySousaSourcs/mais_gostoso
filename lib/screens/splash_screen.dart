@@ -87,7 +87,7 @@ class _SplashScreenState extends State<SplashScreen>
           // Tamanhos responsivos
           final logoSize = screenHeight * 0.3;
           final textSize = screenWidth * 0.4;
-          final spacing = screenHeight * 0.00001;
+          final spacing = screenHeight * 0.0001;
 
           return Center(
             child: SingleChildScrollView(

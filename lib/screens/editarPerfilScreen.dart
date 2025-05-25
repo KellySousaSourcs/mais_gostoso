@@ -22,7 +22,7 @@ class _EditarPerfilScreenState extends State<EditarPerfilScreen> {
     if (!status.isGranted && !storageStatus.isGranted) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Permissão negada para acessar a galeria.'),
+          content: Text('Permissão negada para acessar a galeria!'),
         ),
       );
       return;
