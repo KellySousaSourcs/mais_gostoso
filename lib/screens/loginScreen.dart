@@ -97,26 +97,7 @@ class LoginScreen extends StatelessWidget {
                     ),
 
                     const SizedBox(height: 10),
-                    const Center(child: Text('ou')),
-                    const SizedBox(height: 10),
-                    ElevatedButton.icon(
-                      onPressed: () {
-                        // Ação de login com Google
-                      },
-                      icon: Image.asset(
-                        'assets/images/google.png', // Ícone do Google
-                        height: 33,
-                      ),
-                      label: const Text('Entrar com Google'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFFEDB01),
-                        foregroundColor: Color(0xFF252810),
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                      ),
-                    ),
+
                     const Spacer(),
                     Center(
                       child: Image.asset(
