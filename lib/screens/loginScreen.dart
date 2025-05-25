@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:mais_gostoso/services/auth_service.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -7,6 +9,15 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final nomeController = TextEditingController();
     final telefoneController = TextEditingController();
+    final storage = const FlutterSecureStorage();
+
+    // Verifica se há um usuário logado ao iniciar
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final session = await AuthService.checkSession();
+      if (session['success'] == true) {
+        Navigator.pushReplacementNamed(context, '/home');
+      }
+    });
 
     return Scaffold(
       backgroundColor: const Color(0xFFEDDD1D),
@@ -17,7 +28,7 @@ class LoginScreen extends StatelessWidget {
             // Logo
             Center(
               child: Image.asset(
-                'assets/images/facemaisGostoso.png', // Coloque seu logo aqui
+                'assets/images/facemaisGostoso.png',
                 height: 150,
                 width: 138,
               ),
@@ -80,8 +91,26 @@ class LoginScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 20),
                     ElevatedButton(
-                      onPressed: () {
-                        Navigator.pop(context, true);
+                      onPressed: () async {
+                        if (nomeController.text.isEmpty || telefoneController.text.isEmpty) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Por favor, preencha todos os campos')),
+                          );
+                          return;
+                        }
+
+                        final result = await AuthService.login(
+                          nomeController.text.trim(),
+                          telefoneController.text.trim(),
+                        );
+
+                        if (result['success'] == true) {
+                          Navigator.pushReplacementNamed(context, '/home');
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text(result['message'] ?? 'Erro no login')),
+                          );
+                        }
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF252810),
@@ -95,13 +124,11 @@ class LoginScreen extends StatelessWidget {
                         style: TextStyle(color: Color(0xFFF4FFF1)),
                       ),
                     ),
-
                     const SizedBox(height: 10),
-
                     const Spacer(),
                     Center(
                       child: Image.asset(
-                        'assets/images/hatchef.png', // Logo de rodapé
+                        'assets/images/hatchef.png',
                         height: 97,
                         width: 255,
                       ),
