@@ -1,4 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/> <!-- Android 13+ -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/> <!-- Android 12 ou menos -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/> <!-- (opcional) -->
+
     <application
         android:label="mais_gostoso"
         android:name="${applicationName}"
