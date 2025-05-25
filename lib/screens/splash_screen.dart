@@ -87,7 +87,7 @@ class _SplashScreenState extends State<SplashScreen>
           // Tamanhos responsivos
           final logoSize = screenHeight * 0.3;
           final textSize = screenWidth * 0.4;
-          final spacing = screenHeight * 0.005;
+          final spacing = screenHeight * 0.00001;
 
           return Center(
             child: SingleChildScrollView(
@@ -100,7 +100,7 @@ class _SplashScreenState extends State<SplashScreen>
                     child: FadeTransition(
                       opacity: _fadeAnimation,
                       child: SizedBox(
-                        height: logoSize.clamp(150, 300),
+                        height: logoSize.clamp(200, 300),
                         width: logoSize.clamp(150, 300),
                         child: Image.asset(
                           'assets/images/facemaisGostoso.png',
@@ -111,7 +111,6 @@ class _SplashScreenState extends State<SplashScreen>
                   ),
 
                   SizedBox(height: spacing),
-
                   // Texto com animações
                   SlideTransition(
                     position: _textSlideAnimation,
