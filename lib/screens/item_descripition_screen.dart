@@ -3,6 +3,8 @@ import 'package:mais_gostoso/screens/loginScreen.dart';
 import 'package:mais_gostoso/screens/menu_item_model.dart';
 import 'package:flutter/material.dart';
 import 'package:mais_gostoso/screens/models/favorites_model.dart';
+import 'package:mais_gostoso/services/auth_service.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class ItemDescriptionScreen extends StatefulWidget {
   final Map<String, dynamic> item;
@@ -36,30 +38,30 @@ class _ItemDescriptionScreenState extends State<ItemDescriptionScreen> {
   }
 
   void _addToCart(BuildContext context) async {
-  // Navega para a tela de login e espera o resultado
-  final result = await Navigator.push(
-    context,
-    MaterialPageRoute(builder: (context) => const LoginScreen()),
-  );
-
-  // Se o login foi realizado (você pode adaptar a lógica do retorno)
-  if (result == true) {
-    final menuItem = MenuItem(
-      name: widget.item['name'] ?? '',
-      desc: widget.item['desc'] ?? '',
-      weight: widget.item['weight'] ?? '',
-      image: widget.item['image'] ?? '',
-      price: double.parse((widget.item['price'] ?? '0').replaceAll(',', '.')),
-      quantity: quantity,
-      observation: observation,
+    // Navega para a tela de login e espera o resultado
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const LoginScreen()),
     );
 
-    CartModel().addItem(menuItem);
+    // Se o login foi realizado (você pode adaptar a lógica do retorno)
+    if (result == true) {
+      final menuItem = MenuItem(
+        name: widget.item['name'] ?? '',
+        desc: widget.item['desc'] ?? '',
+        weight: widget.item['weight'] ?? '',
+        image: widget.item['image'] ?? '',
+        price: double.parse((widget.item['price'] ?? '0').replaceAll(',', '.')),
+        quantity: quantity,
+        observation: observation,
+      );
 
-    // Volta para tela anterior e indica sucesso
-    Navigator.pop(context, true);
+      CartModel().addItem(menuItem);
+
+      // Volta para tela anterior e indica sucesso
+      Navigator.pop(context, true);
+    }
   }
-}
 
   @override
   Widget build(BuildContext context) {
@@ -169,14 +171,21 @@ class _ItemDescriptionScreenState extends State<ItemDescriptionScreen> {
                               ),
                             ],
                           ),
-                        ElevatedButton(
-                          onPressed: () => _addToCart(
-                            context,
-                          ), // Alterado para chamar o método diretamente
-                          child: Text(
-                            'Adicionar R\$ ${(double.parse(price.toString().replaceAll(',', '.')) * quantity).toStringAsFixed(2)}',
+                          ElevatedButton(
+                            onPressed: () async {
+                              await AuthService.logout();
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const LoginScreen(),
+                                ),
+                              );
+                              // Remova ou ajuste o _addToCart se necessário
+                            },
+                            child: Text(
+                              'Adicionar R\$ ${(double.parse(price.toString().replaceAll(',', '.')) * quantity).toStringAsFixed(2)}',
+                            ),
                           ),
-                        ),
                         ],
                       ),
                     ],
