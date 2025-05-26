@@ -2,6 +2,7 @@ import 'package:mais_gostoso/screens/cart_model.dart';
 import 'package:mais_gostoso/screens/menu_item_model.dart';
 import 'package:flutter/material.dart';
 import 'package:mais_gostoso/screens/models/favorites_model.dart';
+import 'package:mais_gostoso/screens/services/auth_service.dart';
 
 class ItemDescriptionScreen extends StatefulWidget {
   final Map<String, dynamic> item;
@@ -161,8 +162,18 @@ class _ItemDescriptionScreenState extends State<ItemDescriptionScreen> {
                             ],
                           ),
                           ElevatedButton(
-                            onPressed: () {
-                              Navigator.pushNamed(context, '/login');
+                            onPressed: () async {
+                              final session = await AuthService.checkSession();
+                              if (session['success'] == true) {
+                                _addToCart(
+                                  context,
+                                ); // Adiciona ao carrinho e volta
+                              } else {
+                                Navigator.pushNamed(
+                                  context,
+                                  '/login',
+                                ); // Vai pro login se não estiver logado
+                              }
                             },
                             child: Text(
                               'Adicionar R\$ ${(double.parse(price.toString().replaceAll(',', '.')) * quantity).toStringAsFixed(2)}',
