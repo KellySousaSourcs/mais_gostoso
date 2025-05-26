@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:mais_gostoso/screens/carteira_screen.dart';
 import 'package:mais_gostoso/screens/editarPerfilScreen.dart';
 
 class PerfilScreen extends StatefulWidget {
@@ -96,9 +97,17 @@ class _PerfilScreenState extends State<PerfilScreen> {
                       },
                     ),
                     const Divider(height: 22),
-                    const ListTile(
-                      leading: Icon(Icons.credit_card_outlined),
-                      title: Text('Pagamentos'),
+                    ListTile(
+                      leading: const Icon(Icons.credit_card_outlined),
+                      title: const Text('Pagamentos'),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const CarteiraScreen(),
+                          ),
+                        );
+                      },
                     ),
                     const Divider(height: 22),
                   ],
