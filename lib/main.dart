@@ -12,6 +12,11 @@ import 'package:flutter/material.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Adicione estas linhas para debug:
+  debugPrint('Teste de conexão: http://172.30.247.10:8000/api/test');
+  debugPrint('Versão do app: 1.0.0'); // Opcional: útil para controle
+
   runApp(const MaisGostoso());
 }
 

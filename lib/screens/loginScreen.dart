@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mais_gostoso/services/auth_service.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -9,9 +8,9 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final nomeController = TextEditingController();
     final telefoneController = TextEditingController();
-    final storage = const FlutterSecureStorage();
+    bool isLoading = false; // Adicionado estado de loading
 
-    // Verifica se há um usuário logado ao iniciar
+    // Verifica sessão ao iniciar
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final session = await AuthService.checkSession();
       if (session['success'] == true) {
@@ -36,14 +35,14 @@ class LoginScreen extends StatelessWidget {
             const SizedBox(height: 30),
             Expanded(
               child: Container(
-                decoration: const BoxDecoration(
-                  color: Color(0xFFF4EEE1),
-                  borderRadius: BorderRadius.only(
+                padding: const EdgeInsets.all(25),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF4EEE1),
+                  borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(35),
                     topRight: Radius.circular(35),
                   ),
                 ),
-                padding: const EdgeInsets.all(25),
                 child: SingleChildScrollView(
                   // <-- Adicionado
                   child: Column(
