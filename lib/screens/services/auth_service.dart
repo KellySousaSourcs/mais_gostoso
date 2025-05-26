@@ -8,4 +8,6 @@ class AuthService {
   static void logout() {
     isLoggedIn = false;
   }
+
+  static Future checkSession() async {}
 }
