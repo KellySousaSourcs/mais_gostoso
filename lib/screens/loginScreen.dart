@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mais_gostoso/services/auth_service.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -9,9 +8,9 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final nomeController = TextEditingController();
     final telefoneController = TextEditingController();
-    final storage = const FlutterSecureStorage();
+    bool isLoading = false; // Adicionado estado de loading
 
-    // Verifica se há um usuário logado ao iniciar
+    // Verifica sessão ao iniciar
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final session = await AuthService.checkSession();
       if (session['success'] == true) {
@@ -36,12 +35,11 @@ class LoginScreen extends StatelessWidget {
             const SizedBox(height: 30),
             Expanded(
               child: Container(
-                decoration: const BoxDecoration(
-                  color: Color(0xFFF4EEE1),
-                  borderRadius: BorderRadius.only(
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF4EEE1),
+                  borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(35),
                     topRight: Radius.circular(35),
-                  ),
                 ),
                 padding: const EdgeInsets.all(25),
                 child: Column(
@@ -90,39 +88,71 @@ class LoginScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: () async {
-                        if (nomeController.text.isEmpty || telefoneController.text.isEmpty) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Por favor, preencha todos os campos')),
-                          );
-                          return;
-                        }
+                    StatefulBuilder(
+                      builder: (context, setState) {
+                        return ElevatedButton(
+                          onPressed: isLoading ? null : () async {
+                            if (nomeController.text.isEmpty || 
+                                telefoneController.text.isEmpty) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Por favor, preencha todos os campos'),
+                                ),
+                              );
+                              return;
+                            }
 
-                        final result = await AuthService.login(
-                          nomeController.text.trim(),
-                          telefoneController.text.trim(),
+                            setState(() => isLoading = true);
+                            
+                            try {
+                              // Testa a conexão primeiro
+                              await AuthService.testConnection();
+                              
+                              final result = await AuthService.login(
+                                nomeController.text.trim(),
+                                telefoneController.text.trim(),
+                              );
+
+                              if (result['success'] == true) {
+                                Navigator.pushReplacementNamed(context, '/home');
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(result['message'] ?? 'Erro no login'),
+                                  ),
+                                );
+                              }
+                            } catch (e) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Erro de conexão: $e'),
+                                ),
+                              );
+                            } finally {
+                              if (mounted) {
+                                setState(() => isLoading = false);
+                              }
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF252810),
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            disabledBackgroundColor: Colors.grey,
+                          ),
+                          child: isLoading
+                              ? const CircularProgressIndicator(
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                    Color(0xFFF4FFF1)),
+                                )
+                              : const Text(
+                                  'ENTRAR',
+                                  style: TextStyle(color: Color(0xFFF4FFF1)),
+                                ),
                         );
-
-                        if (result['success'] == true) {
-                          Navigator.pushReplacementNamed(context, '/home');
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text(result['message'] ?? 'Erro no login')),
-                          );
-                        }
                       },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF252810),
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      child: const Text(
-                        'ENTRAR',
-                        style: TextStyle(color: Color(0xFFF4FFF1)),
-                      ),
                     ),
                     const SizedBox(height: 10),
                     const Spacer(),

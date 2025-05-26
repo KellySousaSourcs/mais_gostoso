@@ -5,10 +5,15 @@ import 'package:mais_gostoso/screens/loginScreen.dart';
 import 'package:mais_gostoso/screens/pagamento_screen.dart';
 import 'package:mais_gostoso/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter/services.dart'; // Adicione esta importação
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Adicione estas linhas para debug:
+  debugPrint('Teste de conexão: http://172.30.247.10:8000/api/test');
+  debugPrint('Versão do app: 1.0.0'); // Opcional: útil para controle
+
   runApp(const MaisGostoso());
 }
 
@@ -20,13 +25,12 @@ class MaisGostoso extends StatelessWidget {
     return MaterialApp(
       title: '+Gostoso App',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(snackBarTheme: SnackBarThemeData(
-      backgroundColor: Color(0xFF252810),
-      contentTextStyle: TextStyle(
-        color: Color(0xFFF4FFF1),
-        fontSize: 14,
+      theme: ThemeData(
+        snackBarTheme: SnackBarThemeData(
+          backgroundColor: Color(0xFF252810),
+          contentTextStyle: TextStyle(color: Color(0xFFF4FFF1), fontSize: 14),
+        ),
       ),
-    ),),
       initialRoute: '/',
       routes: {
         '/': (context) => const SplashScreen(),
@@ -36,10 +40,11 @@ class MaisGostoso extends StatelessWidget {
         '/login': (context) => const LoginScreen(),
         '/favorites': (context) => const FavoritesScreen(),
         '/item-description': (context) {
-          final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-          return ItemDescriptionScreen(item: args,);
-        }
-        // futuramente: '/pagamento/pix': ..., '/pagamento/cartao': ...
+          final args =
+              ModalRoute.of(context)!.settings.arguments
+                  as Map<String, dynamic>;
+          return ItemDescriptionScreen(item: args);
+        },
       },
     );
   }
