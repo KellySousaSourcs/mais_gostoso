@@ -162,18 +162,8 @@ class _ItemDescriptionScreenState extends State<ItemDescriptionScreen> {
                             ],
                           ),
                           ElevatedButton(
-                            onPressed: () async {
-                              final session = await AuthService.checkSession();
-                              if (session['success'] == true) {
-                                _addToCart(
-                                  context,
-                                ); // Adiciona ao carrinho e volta
-                              } else {
-                                Navigator.pushNamed(
-                                  context,
-                                  '/login',
-                                ); // Vai pro login se não estiver logado
-                              }
+                            onPressed: () {
+                                Navigator.pushNamed(context, '/login');
                             },
                             child: Text(
                               'Adicionar R\$ ${(double.parse(price.toString().replaceAll(',', '.')) * quantity).toStringAsFixed(2)}',
