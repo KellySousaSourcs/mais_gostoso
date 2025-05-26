@@ -179,10 +179,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder:  (context) => CategoryItemsScreen(
-                                    categoryTitle: category['title']!,
-                                    
-                            ),
+                            builder:
+                                (context) => CategoryItemsScreen(
+                                  categoryTitle: category['title']!,
+                                ),
                           ),
                         );
                       },

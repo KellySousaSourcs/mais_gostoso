@@ -32,6 +32,13 @@ class PagamentoScreen extends StatelessWidget {
                 Navigator.pushNamed(context, '/pagamento/cartao');
               },
             ),
+            ListTile(
+              leading: const Icon(Icons.credit_card),
+              title: const Text(' Pagar com Dinheiro'),
+              onTap: () {
+                Navigator.pushNamed(context, '/pagamento/dinheiro');
+              },
+            ),
           ],
         ),
       ),
