@@ -29,6 +29,8 @@ environment:
 # versions available, run `flutter pub outdated`.
 dependencies:
   http: ^1.2.0
+  flutter_secure_storage: ^9.0.0 # Use a versão mais recente disponível
+  qr_flutter: ^4.1.0
 
   flutter:
     sdk: flutter
