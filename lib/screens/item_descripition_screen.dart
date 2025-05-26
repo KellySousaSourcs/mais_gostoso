@@ -161,10 +161,9 @@ class _ItemDescriptionScreenState extends State<ItemDescriptionScreen> {
                             ],
                           ),
                           ElevatedButton(
-                            onPressed:
-                                () => _addToCart(
-                                  context,
-                                ), // Alterado para chamar o método diretamente
+                            onPressed: () {
+                              Navigator.pushNamed(context, '/login');
+                            },
                             child: Text(
                               'Adicionar R\$ ${(double.parse(price.toString().replaceAll(',', '.')) * quantity).toStringAsFixed(2)}',
                             ),
