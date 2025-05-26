@@ -2,7 +2,6 @@ import 'package:mais_gostoso/screens/cart_model.dart';
 import 'package:mais_gostoso/screens/menu_item_model.dart';
 import 'package:flutter/material.dart';
 import 'package:mais_gostoso/screens/models/favorites_model.dart';
-import 'package:mais_gostoso/screens/services/auth_service.dart';
 
 class ItemDescriptionScreen extends StatefulWidget {
   final Map<String, dynamic> item;
