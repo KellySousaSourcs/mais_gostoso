@@ -24,19 +24,14 @@ class PagamentoDinheiroScreen extends StatelessWidget {
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xFFEDDD1D), // Co
-<<<<<<< HEAD
                   padding: const EdgeInsets.symmetric(
                     vertical: 16,
                     horizontal: 32,
                   ),
-=======
-                  padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
->>>>>>> main
                 ),
                 onPressed: () {
                   Navigator.pushNamed(context, '/pedido/concluido');
                 },
-<<<<<<< HEAD
                 child: const Text(
                   'Confirmar',
                   style: TextStyle(
@@ -46,11 +41,6 @@ class PagamentoDinheiroScreen extends StatelessWidget {
                   ),
                 ),
               ),
-=======
-                child: const Text('Confirmar',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF252810)),
-              ),)
->>>>>>> main
             ],
           ),
         ),
