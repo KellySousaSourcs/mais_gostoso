@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mais_gostoso/services/auth_service.dart';
 
-class LoginScreen extends StatefulWidget {  // Alterado para StatefulWidget
+class LoginScreen extends StatefulWidget {
+  // Alterado para StatefulWidget
   const LoginScreen({super.key});
 
   @override
@@ -14,7 +15,8 @@ class _LoginScreenState extends State<LoginScreen> {
   final telefoneController = TextEditingController();
   final _storage = const FlutterSecureStorage();
   bool isLoading = false;
-  bool isCheckingSession = true;  // Adicionado para controle de verificação inicial
+  bool isCheckingSession =
+      true; // Adicionado para controle de verificação inicial
 
   @override
   void initState() {
@@ -64,9 +66,9 @@ class _LoginScreenState extends State<LoginScreen> {
       }
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Erro: ${e.toString()}')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Erro: ${e.toString()}')));
     } finally {
       if (mounted) {
         setState(() => isLoading = false);
@@ -171,19 +173,20 @@ class _LoginScreenState extends State<LoginScreen> {
                             borderRadius: BorderRadius.circular(8),
                           ),
                         ),
-                        child: isLoading
-                            ? const SizedBox(
-                                width: 20,
-                                height: 20,
-                                child: CircularProgressIndicator(
-                                  color: Colors.white,
-                                  strokeWidth: 2,
+                        child:
+                            isLoading
+                                ? const SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                    color: Colors.white,
+                                    strokeWidth: 2,
+                                  ),
+                                )
+                                : const Text(
+                                  'ENTRAR',
+                                  style: TextStyle(color: Color(0xFFF4FFF1)),
                                 ),
-                              )
-                            : const Text(
-                                'ENTRAR',
-                                style: TextStyle(color: Color(0xFFF4FFF1)),
-                              ),
                       ),
                       const SizedBox(height: 10),
                       const Spacer(),
