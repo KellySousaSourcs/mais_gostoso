@@ -3,8 +3,9 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mais_gostoso/services/auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
-  // Alterado para StatefulWidget
-  const LoginScreen({super.key});
+  final bool returnToPrevious;
+
+  const LoginScreen({super.key, this.returnToPrevious = false});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -13,20 +14,11 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final nomeController = TextEditingController();
   final telefoneController = TextEditingController();
-  final _storage = const FlutterSecureStorage();
+  final storage = const FlutterSecureStorage();
   bool isLoading = false;
-  bool isCheckingSession =
-      true; // Adicionado para controle de verificação inicial
+  bool isCheckingSession = true;
 
-  @override
-  void initState() {
-    super.initState();
-    _checkInitialSession();
-    // Teste de conexão (opcional - para debug)
-    AuthService.testConnection();
-  }
-
-  Future<void> _checkInitialSession() async {
+  Future<void> checkInitialSession() async {
     try {
       final session = await AuthService.checkSession();
       if (session['success'] == true && mounted) {
@@ -58,7 +50,11 @@ class _LoginScreenState extends State<LoginScreen> {
       if (!mounted) return;
 
       if (result['success'] == true) {
-        Navigator.pushReplacementNamed(context, '/home');
+        if (widget.returnToPrevious) {
+          Navigator.of(context).pop(true);
+        } else {
+          Navigator.pushReplacementNamed(context, '/home');
+        }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(result['message'] ?? 'Erro no login')),
@@ -98,7 +94,6 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Column(
           children: [
             const SizedBox(height: 40),
-            // Logo
             Center(
               child: Image.asset(
                 'assets/images/facemaisGostoso.png',
