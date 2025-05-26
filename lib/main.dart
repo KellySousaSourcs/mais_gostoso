@@ -12,11 +12,8 @@ import 'package:flutter/material.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  // Adicione estas linhas para debug:
   debugPrint('Teste de conexão: http://172.30.247.10:8000/api/test');
-  debugPrint('Versão do app: 1.0.0'); // Opcional: útil para controle
-
+  debugPrint('Versão do app: 1.0.0');
   runApp(const MaisGostoso());
 }
 
@@ -31,10 +28,7 @@ class MaisGostoso extends StatelessWidget {
       theme: ThemeData(
         snackBarTheme: const SnackBarThemeData(
           backgroundColor: Color(0xFF252810),
-          contentTextStyle: TextStyle(
-            color: Color(0xFFF4FFF1),
-            fontSize: 14,
-          ),
+          contentTextStyle: TextStyle(color: Color(0xFFF4FFF1), fontSize: 14),
         ),
       ),
       initialRoute: '/',
@@ -47,11 +41,22 @@ class MaisGostoso extends StatelessWidget {
         '/pagamento/cartao': (context) => const PagamentoCartaoScreen(),
         '/pagamento/dinheiro': (context) => const PagamentoDinheiroScreen(),
         '/pedido/concluido': (context) => const PedidoConcluidoScreen(),
-        '/login': (context) => const LoginScreen(),
+        '/login': (context) {
+          final args = ModalRoute.of(context)?.settings.arguments;
+          return LoginScreen(returnToPrevious: args != null);
+        },
         '/favorites': (context) => const FavoritesScreen(),
         '/item-description': (context) {
-          final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-          return ItemDescriptionScreen(item: args);
+          final args = ModalRoute.of(context)!.settings.arguments;
+          if (args is Map<String, dynamic> && args.containsKey('item')) {
+            return ItemDescriptionScreen(item: args['item']);
+          } else if (args is Map<String, dynamic>) {
+            return ItemDescriptionScreen(item: args);
+          } else {
+            return const Scaffold(
+              body: Center(child: Text('Item não encontrado')),
+            );
+          }
         },
       },
     );
