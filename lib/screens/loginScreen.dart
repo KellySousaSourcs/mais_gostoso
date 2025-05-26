@@ -131,7 +131,7 @@ class LoginScreen extends StatelessWidget {
                         ),
                         child: const Text(
                           'ENTRAR',
-                          style: TextStyle(color: Color(0xFFF4FFF1)),
+                          style: TextStyle(color: Color(0xFFFFFFFF)),
                         ),
                       ),
                       const SizedBox(height: 30),
