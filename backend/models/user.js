@@ -1,6 +1,6 @@
-const { DataTypes } = require('sequelize');
+import { DataTypes } from 'sequelize';
 
-module.exports = (sequelize) => {
+export default (sequelize) => {
   const User = sequelize.define('User', {
     nome: {
       type: DataTypes.STRING,
@@ -19,7 +19,7 @@ module.exports = (sequelize) => {
     }
   }, {
     tableName: 'users',
-    timestamps: false // Desativa created_at e updated_at
+    timestamps: false
   });
 
   return User;

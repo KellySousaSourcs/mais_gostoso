@@ -1,15 +1,16 @@
+import express from 'express';
+const router = express.Router();
+
 router.post("/login", async (req, res) => {
   try {
     const { nome, telefone } = req.body;
     const { User } = req.app.locals.sequelize.models;
 
-    // Busca ou cria usuário
     const [user, created] = await User.findOrCreate({
       where: { telefone },
       defaults: { nome, ultimoAcesso: new Date() }
     });
 
-    // Atualiza último acesso se não for novo usuário
     if (!created) {
       await User.update(
         { ultimoAcesso: new Date() },
@@ -53,3 +54,5 @@ router.get("/session/:telefone", async (req, res) => {
     res.status(500).json({ success: false, error: error.message });
   }
 });
+
+export default router;
