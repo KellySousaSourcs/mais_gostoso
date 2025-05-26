@@ -1,21 +1,26 @@
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
 
-const userSchema = new mongoose.Schema({
-  nome: {
-    type: String,
-    required: true,
-    trim: true
-  },
-  telefone: {
-    type: String,
-    required: true,
-    unique: true,
-    trim: true
-  },
-  ultimoAcesso: {
-    type: Date,
-    default: Date.now
-  }
-});
+module.exports = (sequelize) => {
+  const User = sequelize.define('User', {
+    nome: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      trim: true
+    },
+    telefone: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+      trim: true
+    },
+    ultimoAcesso: {
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW
+    }
+  }, {
+    tableName: 'users',
+    timestamps: false // Desativa created_at e updated_at
+  });
 
-module.exports = mongoose.model('User', userSchema);
+  return User;
+};
