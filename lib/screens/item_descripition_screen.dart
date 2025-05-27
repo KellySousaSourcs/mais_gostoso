@@ -39,7 +39,7 @@ class _ItemDescriptionScreenState extends State<ItemDescriptionScreen> {
   // Navega para a tela de login e espera o resultado
   final result = await Navigator.push(
     context,
-   MaterialPageRoute(
+  MaterialPageRoute(
   builder: (context) => const LoginScreen(returnToPrevious: false),
 ),
   );
