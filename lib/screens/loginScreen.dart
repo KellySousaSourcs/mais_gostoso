@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:mais_gostoso/services/auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
   final bool returnToPrevious;
@@ -16,23 +15,12 @@ class _LoginScreenState extends State<LoginScreen> {
   final telefoneController = TextEditingController();
   final storage = const FlutterSecureStorage();
   bool isLoading = false;
-  bool isCheckingSession = true;
-
-  Future<void> checkInitialSession() async {
-    try {
-      final session = await AuthService.checkSession();
-      if (session['success'] == true && mounted) {
-        Navigator.pushReplacementNamed(context, '/home');
-      }
-    } finally {
-      if (mounted) {
-        setState(() => isCheckingSession = false);
-      }
-    }
-  }
 
   Future<void> _handleLogin() async {
-    if (nomeController.text.isEmpty || telefoneController.text.isEmpty) {
+    final nome = nomeController.text.trim();
+    final telefone = telefoneController.text.trim();
+
+    if (nome.isEmpty || telefone.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Por favor, preencha todos os campos')),
       );
@@ -42,29 +30,16 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() => isLoading = true);
 
     try {
-      final result = await AuthService.login(
-        nomeController.text.trim(),
-        telefoneController.text.trim(),
-      );
+      await storage.write(key: 'nome', value: nome);
+      await storage.write(key: 'telefone', value: telefone);
 
       if (!mounted) return;
 
-      if (result['success'] == true) {
-        if (widget.returnToPrevious) {
-          Navigator.of(context).pop(true);
-        } else {
-          Navigator.pushReplacementNamed(context, '/home');
-        }
+      if (widget.returnToPrevious) {
+        Navigator.pop(context);
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(result['message'] ?? 'Erro no login')),
-        );
+        Navigator.pushReplacementNamed(context, '/home');
       }
-    } catch (e) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Erro: ${e.toString()}')));
     } finally {
       if (mounted) {
         setState(() => isLoading = false);
@@ -81,13 +56,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (isCheckingSession) {
-      return const Scaffold(
-        backgroundColor: Color(0xFFEDDD1D),
-        body: Center(child: CircularProgressIndicator()),
-      );
-    }
-
     return Scaffold(
       backgroundColor: const Color(0xFFEDDD1D),
       body: SafeArea(
@@ -106,92 +74,43 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Container(
                 decoration: const BoxDecoration(
                   color: Color(0xFFF4EEE1),
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(35),
-                    topRight: Radius.circular(35),
-                  ),
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
                 ),
-                padding: const EdgeInsets.all(25),
-                child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(24.0),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      const Text(
-                        'NOME:',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
                       TextField(
                         controller: nomeController,
-                        decoration: InputDecoration(
-                          hintText: 'Digite seu nome aqui',
-                          filled: true,
-                          fillColor: Colors.white,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide.none,
-                          ),
-                        ),
+                        decoration: const InputDecoration(labelText: 'Nome'),
                       ),
                       const SizedBox(height: 16),
-                      const Text(
-                        'TELEFONE:',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
                       TextField(
                         controller: telefoneController,
+                        decoration: const InputDecoration(labelText: 'Telefone'),
                         keyboardType: TextInputType.phone,
-                        decoration: InputDecoration(
-                          hintText: 'Digite seu número aqui',
-                          filled: true,
-                          fillColor: Colors.white,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide.none,
-                          ),
-                        ),
                       ),
-                      const SizedBox(height: 20),
-                      ElevatedButton(
-                        onPressed: isLoading ? null : _handleLogin,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF252810),
-                          padding: const EdgeInsets.symmetric(vertical: 14),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                        child:
-                            isLoading
-                                ? const SizedBox(
-                                  width: 20,
-                                  height: 20,
-                                  child: CircularProgressIndicator(
-                                    color: Colors.white,
-                                    strokeWidth: 2,
+                      const SizedBox(height: 32),
+                      isLoading
+                          ? const CircularProgressIndicator()
+                          : SizedBox(
+                              width: double.infinity,
+                              child: ElevatedButton(
+                                onPressed: _handleLogin,
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xFFEDDD1D),
+                                  foregroundColor: Colors.black,
+                                  padding: const EdgeInsets.symmetric(vertical: 16),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
                                   ),
-                                )
-                                : const Text(
-                                  'ENTRAR',
-                                  style: TextStyle(color: Color(0xFFF4FFF1)),
                                 ),
-                      ),
-                      const SizedBox(height: 10),
-                      const Spacer(),
-                      Center(
-                        child: Image.asset(
-                          'assets/images/hatchef.png',
-                          height: 97,
-                          width: 255,
-                        ),
-                      ),
+                                child: const Text(
+                                  'Entrar',
+                                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            ),
                     ],
                   ),
                 ),
