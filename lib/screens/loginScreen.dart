@@ -1,70 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-class LoginScreen extends StatefulWidget {
-  final bool returnToPrevious;
-
-  const LoginScreen({super.key, this.returnToPrevious = false});
-
-  @override
-  State<LoginScreen> createState() => _LoginScreenState();
-}
-
-class _LoginScreenState extends State<LoginScreen> {
-  final nomeController = TextEditingController();
-  final telefoneController = TextEditingController();
-  final storage = const FlutterSecureStorage();
-  bool isLoading = false;
-
-  Future<void> _handleLogin() async {
-    final nome = nomeController.text.trim();
-    final telefone = telefoneController.text.trim();
-
-    if (nome.isEmpty || telefone.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Por favor, preencha todos os campos')),
-      );
-      return;
-    }
-
-    setState(() => isLoading = true);
-
-    try {
-      await storage.write(key: 'nome', value: nome);
-      await storage.write(key: 'telefone', value: telefone);
-
-      if (!mounted) return;
-
-      if (widget.returnToPrevious) {
-        Navigator.pop(context);
-      } else {
-        Navigator.pushReplacementNamed(context, '/home');
-      }
-    } finally {
-      if (mounted) {
-        setState(() => isLoading = false);
-      }
-    }
-  }
-
-  @override
-  void dispose() {
-    nomeController.dispose();
-    telefoneController.dispose();
-    super.dispose();
-  }
+class LoginScreen extends StatelessWidget {
+  const LoginScreen({super.key, required bool returnToPrevious});
 
   @override
   Widget build(BuildContext context) {
+    final nomeController = TextEditingController();
+    final telefoneController = TextEditingController();
+
     return Scaffold(
       backgroundColor: const Color(0xFFEDDD1D),
       body: SafeArea(
         child: Column(
           children: [
             const SizedBox(height: 40),
+            // Logo
             Center(
               child: Image.asset(
-                'assets/images/facemaisGostoso.png',
+                'assets/images/facemaisGostoso.png', // Coloque seu logo aqui
                 height: 150,
                 width: 138,
               ),
@@ -74,45 +27,86 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Container(
                 decoration: const BoxDecoration(
                   color: Color(0xFFF4EEE1),
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(24.0),
-                  child: Column(
-                    children: [
-                      TextField(
-                        controller: nomeController,
-                        decoration: const InputDecoration(labelText: 'Nome'),
-                      ),
-                      const SizedBox(height: 16),
-                      TextField(
-                        controller: telefoneController,
-                        decoration: const InputDecoration(labelText: 'Telefone'),
-                        keyboardType: TextInputType.phone,
-                      ),
-                      const SizedBox(height: 32),
-                      isLoading
-                          ? const CircularProgressIndicator()
-                          : SizedBox(
-                              width: double.infinity,
-                              child: ElevatedButton(
-                                onPressed: _handleLogin,
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color(0xFFEDDD1D),
-                                  foregroundColor: Colors.black,
-                                  padding: const EdgeInsets.symmetric(vertical: 16),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                ),
-                                child: const Text(
-                                  'Entrar',
-                                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                            ),
-                    ],
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(35),
+                    topRight: Radius.circular(35),
                   ),
+                ),
+                padding: const EdgeInsets.all(25),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const Text(
+                      'NOME:',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    TextField(
+                      controller: nomeController,
+                      decoration: InputDecoration(
+                        hintText: 'Digite seu nome aqui',
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    const Text(
+                      'TELEFONE:',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    TextField(
+                      controller: telefoneController,
+                      keyboardType: TextInputType.phone,
+                      decoration: InputDecoration(
+                        hintText: 'Digite seu número aqui',
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context, true);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF252810),
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      child: const Text(
+                        'ENTRAR',
+                        style: TextStyle(color: Color(0xFFF4FFF1)),
+                      ),
+                    ),
+
+                    const SizedBox(height: 10),
+
+                    const Spacer(),
+                    Center(
+                      child: Image.asset(
+                        'assets/images/hatchef.png', // Logo de rodapé
+                        height: 97,
+                        width: 255,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),

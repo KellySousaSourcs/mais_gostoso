@@ -1,8 +1,8 @@
 import 'package:mais_gostoso/screens/cart_model.dart';
+import 'package:mais_gostoso/screens/loginScreen.dart';
 import 'package:mais_gostoso/screens/menu_item_model.dart';
 import 'package:flutter/material.dart';
 import 'package:mais_gostoso/screens/models/favorites_model.dart';
-import 'package:mais_gostoso/services/auth_service.dart';
 
 class ItemDescriptionScreen extends StatefulWidget {
   final Map<String, dynamic> item;
@@ -35,7 +35,17 @@ class _ItemDescriptionScreenState extends State<ItemDescriptionScreen> {
     super.dispose();
   }
 
-  void _addToCart(BuildContext context) {
+  void _addToCart(BuildContext context) async {
+  // Navega para a tela de login e espera o resultado
+  final result = await Navigator.push(
+    context,
+   MaterialPageRoute(
+  builder: (context) => const LoginScreen(returnToPrevious: false),
+),
+  );
+
+  // Se o login foi realizado (você pode adaptar a lógica do retorno)
+  if (result == true) {
     final menuItem = MenuItem(
       name: widget.item['name'] ?? '',
       desc: widget.item['desc'] ?? '',
@@ -46,12 +56,12 @@ class _ItemDescriptionScreenState extends State<ItemDescriptionScreen> {
       observation: observation,
     );
 
-    // Adiciona ao carrinho global
     CartModel().addItem(menuItem);
 
-    // Volta para tela anterior
-    Navigator.pop(context);
+    // Volta para tela anterior e indica sucesso
+    Navigator.pop(context, true);
   }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +74,7 @@ class _ItemDescriptionScreenState extends State<ItemDescriptionScreen> {
             child: Padding(
               padding: EdgeInsets.only(bottom: 232),
               child: Transform.scale(
-                scale: 3,
+                scale: 3, // Aumenta a imagem em 30%
                 child: Container(
                   decoration: BoxDecoration(
                     image: DecorationImage(
@@ -85,7 +95,9 @@ class _ItemDescriptionScreenState extends State<ItemDescriptionScreen> {
           SingleChildScrollView(
             child: Column(
               children: [
-                SizedBox(height: 230),
+                // Espaço adicional para o card sobreposto
+                SizedBox(height: 230), // Ajuste conforme necessário
+                // Container principal com conteúdo
                 Container(
                   margin: EdgeInsets.all(10),
                   padding: EdgeInsets.all(19),
@@ -93,23 +105,28 @@ class _ItemDescriptionScreenState extends State<ItemDescriptionScreen> {
                     color: Color(0xFFF4EEE1),
                     borderRadius: BorderRadius.circular(25),
                   ),
+
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      // Imagem sobreposta
                       Positioned(
-                        bottom: 220,
+                        bottom: 220, // Ajuste a posição vertical
                         right: 9,
-                        left: 9,
+                        left: 9, // Ajuste a posição horizontal
                         child: Container(
-                          width: 340,
-                          height: 270,
+                          width: 340, // Largura da imagem
+                          height: 270, // Altura da imagem
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
+                            borderRadius: BorderRadius.circular(
+                              10,
+                            ), // Bordas arredondadas
                           ),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(25),
                             child: Image.asset(
-                              widget.item['image'],
+                              widget
+                                  .item['image'], // Caminho da sua imagem sobreposta
                               fit: BoxFit.cover,
                             ),
                           ),
@@ -126,13 +143,13 @@ class _ItemDescriptionScreenState extends State<ItemDescriptionScreen> {
                       ),
                       SizedBox(height: 20),
                       TextField(
-                        onChanged: (value) => observation = value,
                         decoration: InputDecoration(
                           labelText: 'Alguma observação?',
                           hintText: 'Ex: tirar queijo, tenho lactose',
                           border: OutlineInputBorder(),
                         ),
                       ),
+
                       SizedBox(height: 60),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -154,36 +171,14 @@ class _ItemDescriptionScreenState extends State<ItemDescriptionScreen> {
                               ),
                             ],
                           ),
-                          ElevatedButton(
-                            onPressed: () async {
-                              final isLoggedIn =
-                                  await AuthService.checkSession().then(
-                                    (session) => session['success'] == true,
-                                  );
-
-                              if (isLoggedIn) {
-                                _addToCart(context);
-                              } else {
-                                final result = await Navigator.pushNamed(
-                                  context,
-                                  '/login',
-                                  arguments: {
-                                    'returnRoute': '/item-description',
-                                    'item': widget.item,
-                                    'quantity': quantity,
-                                    'observation': observation,
-                                  },
-                                );
-
-                                if (result == true && mounted) {
-                                  _addToCart(context);
-                                }
-                              }
-                            },
-                            child: Text(
-                              'Adicionar R\$ ${(double.parse(price.toString().replaceAll(',', '.')) * quantity).toStringAsFixed(2)}',
-                            ),
+                        ElevatedButton(
+                          onPressed: () => _addToCart(
+                            context,
+                          ), // Alterado para chamar o método diretamente
+                          child: Text(
+                            'Adicionar R\$ ${(double.parse(price.toString().replaceAll(',', '.')) * quantity).toStringAsFixed(2)}',
                           ),
+                        ),
                         ],
                       ),
                     ],
@@ -193,6 +188,7 @@ class _ItemDescriptionScreenState extends State<ItemDescriptionScreen> {
             ),
           ),
 
+          // Imagem de cabeçalho fixa (não rola com o conteúdo)
           Positioned(
             top: 0,
             left: 0,
@@ -212,11 +208,13 @@ class _ItemDescriptionScreenState extends State<ItemDescriptionScreen> {
                     height: 35,
                     width: 35,
                     decoration: BoxDecoration(
-                      color: Color(0xFFF4FFFF),
-                      shape: BoxShape.circle,
+                      color: Color(0xFFF4FFFF), // Cor do círculo (branco)
+                      shape: BoxShape.circle, // Forma circular
                       boxShadow: [
                         BoxShadow(
-                          color: Color(0xFF252810).withOpacity(0.1),
+                          color: Color(
+                            0xFF252810,
+                          ).withOpacity(0.1), // Sombra suave (opcional)
                           blurRadius: 4,
                           offset: Offset(0, 2),
                         ),
@@ -239,11 +237,13 @@ class _ItemDescriptionScreenState extends State<ItemDescriptionScreen> {
                     height: 35,
                     width: 35,
                     decoration: BoxDecoration(
-                      color: Color(0xFFF4FFFF),
-                      shape: BoxShape.circle,
+                      color: Color(0xFFF4FFFF), // Cor do círculo (branco)
+                      shape: BoxShape.circle, // Forma circular
                       boxShadow: [
                         BoxShadow(
-                          color: Color(0xFF252810).withOpacity(0.1),
+                          color: Color(
+                            0xFF252810,
+                          ).withOpacity(0.1), // Sombra suave (opcional)
                           blurRadius: 4,
                           offset: Offset(0, 2),
                         ),
@@ -260,9 +260,11 @@ class _ItemDescriptionScreenState extends State<ItemDescriptionScreen> {
                       ),
                       onPressed: () async {
                         await _favoritesModel.toggleFavorite(widget.item);
+
                         final isNowFavorite = _favoritesModel.isFavorite(
                           widget.item['name'] ?? '',
                         );
+
                         if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
@@ -274,7 +276,9 @@ class _ItemDescriptionScreenState extends State<ItemDescriptionScreen> {
                               action: SnackBarAction(
                                 textColor: Color(0xFFEDDD1D),
                                 label: 'Fechar',
-                                onPressed: () {},
+                                onPressed: () {
+                                  // Ação ao pressionar o botão "Fechar"
+                                },
                               ),
                               backgroundColor: const Color(0xFF252810),
                               duration: const Duration(seconds: 2),
@@ -289,6 +293,7 @@ class _ItemDescriptionScreenState extends State<ItemDescriptionScreen> {
             ),
           ),
 
+          // Container branco com o título da categoria que está sobreposto
           Positioned(
             top: 121,
             bottom: 54,
@@ -303,7 +308,7 @@ class _ItemDescriptionScreenState extends State<ItemDescriptionScreen> {
                   height: 100,
                   margin: const EdgeInsets.only(bottom: 1),
                   padding: const EdgeInsets.only(
-                    top: 50,
+                    top: 50, // espaço para o círculo da imagem
                     left: 24,
                     right: 24,
                     bottom: 20,
@@ -333,6 +338,8 @@ class _ItemDescriptionScreenState extends State<ItemDescriptionScreen> {
                     ),
                   ),
                 ),
+
+                // IMAGEM dentro de círculo branco acima do container
                 Positioned(
                   top: -41.8,
                   child: Container(
