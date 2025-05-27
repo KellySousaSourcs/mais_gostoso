@@ -96,16 +96,4 @@ class AuthService {
       isLoggedIn = false;
     }
   }
-
-  static Future<void> testConnection() async {
-    try {
-      final response = await http.get(
-        Uri.parse('http://172.30.247.10:8000/api/test'),
-        headers: {'Content-Type': 'application/json'},
-      );
-      print('Resposta do servidor: ${response.statusCode} - ${response.body}');
-    } catch (e) {
-      print('Erro detalhado: $e');
-    }
-  }
 }

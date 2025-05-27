@@ -1,4 +1,5 @@
 import 'package:mais_gostoso/screens/cart_model.dart';
+import 'package:mais_gostoso/screens/loginScreen.dart';
 import 'package:mais_gostoso/screens/menu_item_model.dart';
 import 'package:flutter/material.dart';
 import 'package:mais_gostoso/screens/models/favorites_model.dart';
@@ -34,7 +35,17 @@ class _ItemDescriptionScreenState extends State<ItemDescriptionScreen> {
     super.dispose();
   }
 
-  void _addToCart(BuildContext context) {
+  void _addToCart(BuildContext context) async {
+  // Navega para a tela de login e espera o resultado
+  final result = await Navigator.push(
+    context,
+   MaterialPageRoute(
+  builder: (context) => const LoginScreen(returnToPrevious: false),
+),
+  );
+
+  // Se o login foi realizado (você pode adaptar a lógica do retorno)
+  if (result == true) {
     final menuItem = MenuItem(
       name: widget.item['name'] ?? '',
       desc: widget.item['desc'] ?? '',
@@ -45,12 +56,12 @@ class _ItemDescriptionScreenState extends State<ItemDescriptionScreen> {
       observation: observation,
     );
 
-    // Adiciona ao carrinho global
     CartModel().addItem(menuItem);
 
-    // Volta para tela anterior
-    Navigator.pop(context);
+    // Volta para tela anterior e indica sucesso
+    Navigator.pop(context, true);
   }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -160,14 +171,14 @@ class _ItemDescriptionScreenState extends State<ItemDescriptionScreen> {
                               ),
                             ],
                           ),
-                          ElevatedButton(
-                            onPressed: () {
-                                Navigator.pushNamed(context, '/login');
-                            },
-                            child: Text(
-                              'Adicionar R\$ ${(double.parse(price.toString().replaceAll(',', '.')) * quantity).toStringAsFixed(2)}',
-                            ),
+                        ElevatedButton(
+                          onPressed: () => _addToCart(
+                            context,
+                          ), // Alterado para chamar o método diretamente
+                          child: Text(
+                            'Adicionar R\$ ${(double.parse(price.toString().replaceAll(',', '.')) * quantity).toStringAsFixed(2)}',
                           ),
+                        ),
                         ],
                       ),
                     ],
